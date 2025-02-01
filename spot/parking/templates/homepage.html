@@ -1,3 +1,9 @@
-<!-- templates/homepage.html -->
-<h1>Welcome to the Homepage!</h1>
-<p>Welcome to the spot management system.</p>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome to SPOT!</h1>
+    <p>This is the homepage of the Smart Parking Organization Tool.</p>
+    <p>Use the link below to navigate back to the homepage:</p>
+    <!-- Link to the homepage -->
+    <a href="{% url 'homepage' %}">Back to Homepage</a>
+{% endblock %}

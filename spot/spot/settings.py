@@ -54,11 +54,11 @@ ROOT_URLCONF = 'spot.urls'
 
 # Static files configuration
 STATIC_URL = '/static/'
+
+# Ensure you're pointing to the correct directories for static files
 STATICFILES_DIRS = [
     BASE_DIR / 'parking/static',  # Update this to point to the 'parking' app's static folder
 ]
-
-
 
 # Templates directory setup
 TEMPLATES = [

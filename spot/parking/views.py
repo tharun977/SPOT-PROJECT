@@ -4,7 +4,7 @@ from parking.models import ParkingPlace, ParkingLot, PaymentDetail, VehicleType,
 from .forms import UserForm
 
 def homepage(request):
-    return render(request, 'base.html')  # Make sure 'homepage.html' exists in your templates
+    return render(request, 'homepage.html')  # Make sure 'homepage.html' exists in your templates
 
 
 # Form Classes

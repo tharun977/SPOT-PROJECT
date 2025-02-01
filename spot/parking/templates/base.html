@@ -1,10 +1,15 @@
+{% load static %}  <!-- Load static files at the top -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SPOT - Smart Parking Organization Tool{% endblock %}</title>
+    
+    <!-- Link to static CSS file -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -12,27 +17,31 @@
     <header>
         <nav>
             <ul>
-                <li><a href="{% url 'home' %}">SPOT</a></li>
+                <!-- Corrected link to the homepage -->
+                <li><a href="{% url 'homepage' %}">SPOT</a></li>
+                
+                <!-- User management links -->
                 <li><a href="{% url 'user_list' %}">Users</a></li>
-                <li><a href="{% url 'parking_slot_list' %}">Parking Slots</a></li>
-                <li><a href="{% url 'payment_detail_list' %}">Payments</a></li>
-                <li><a href="{% url 'log_detail_list' %}">Logs</a></li>
+                <li><a href="{% url 'user_new' %}">Create User</a></li>
+
+                <!-- Parking management links -->
+                <li><a href="{% url 'parking_place_list' %}">Parking Slots</a></li>
+                <li><a href="{% url 'parking_place_new' %}">Create Parking Slot</a></li>
+
+                <!-- Additional links for other models, if needed -->
+                <li><a href="{% url 'payment_detail_list' %}">Payment Details</a></li>
+                <li><a href="{% url 'vehicle_type_list' %}">Vehicle Types</a></li>
+                <li><a href="{% url 'log_detail_list' %}">Log Details</a></li>
             </ul>
         </nav>
     </header>
+    
+    {% block content %}
+    <!-- Dynamic content will be injected here -->
+    {% endblock %}
 
-    <!-- Main Content Area -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-
-    <!-- Footer Section -->
     <footer>
-        <p>&copy; 2025 SPOT - Smart Parking Organization Tool</p>
+        <!-- Common footer content -->
     </footer>
-
-    <!-- Scripts -->
-    <script src="{% static 'js/script.js' %}"></script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html>
