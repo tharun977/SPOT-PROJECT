@@ -1,15 +1,21 @@
-{% extends 'base.html' %}
-
-{% block content %}
-<h2>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Parking Slot</h2>
-
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">{% if form.instance.pk %}Save{% else %}Create{% endif %}</button>
-</form>
-
-{% if form.instance.pk %}
-<a href="{% url 'parking_slot_list' %}">Back to list</a>
-{% endif %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Slots</title>
+</head>
+<body>
+    <h1>Parking Slots</h1>
+    <a href="{% url 'parking_slot_create' %}">Create New Parking Slot</a>
+    <ul>
+        {% for slot in parking_slots %}
+            <li>
+                <a href="{% url 'parking_slot_detail' slot.pk %}">{{ slot.name }}</a>
+                - <a href="{% url 'parking_slot_edit' slot.pk %}">Edit</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'homepage' %}">Back to Homepage</a>
+</body>
+</html>

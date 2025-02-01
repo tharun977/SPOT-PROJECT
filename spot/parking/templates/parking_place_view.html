@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Slot View</title>
+</head>
+<body>
+    <h1>{{ parking_place.name }}</h1>
+    <p>Location: {{ parking_place.location }}</p>
+    <p>Status: {{ parking_place.status }}</p>
+    <a href="{% url 'parking_place_edit' parking_place.pk %}">Edit Parking Slot</a>
+    <a href="{% url 'parking_place_delete' parking_place.pk %}">Delete Parking Slot</a>
+    <a href="{% url 'parking_place_list' %}">Back to Parking Slot List</a>
+</body>
+</html>

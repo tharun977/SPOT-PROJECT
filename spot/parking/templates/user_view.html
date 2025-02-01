@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User View</title>
+</head>
+<body>
+    <h1>{{ user.name }}</h1>
+    <p>Email: {{ user.email }}</p>
+    <p>Phone: {{ user.phone }}</p>
+    <a href="{% url 'user_edit' user.pk %}">Edit User</a>
+    <a href="{% url 'user_delete' user.pk %}">Delete User</a>
+    <a href="{% url 'user_list' %}">Back to User List</a>
+</body>
+</html>

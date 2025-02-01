@@ -1,9 +1,66 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPOT - Smart Parking Organization Tool</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
-    <h1>Welcome to SPOT!</h1>
-    <p>This is the homepage of the Smart Parking Organization Tool.</p>
-    <p>Use the link below to navigate back to the homepage:</p>
-    <!-- Link to the homepage -->
-    <a href="{% url 'homepage' %}">Back to Homepage</a>
-{% endblock %}
+    <div class="container">
+        <h1>Welcome to SPOT!</h1>
+        <p>This is the homepage of the <strong>Smart Parking Organization Tool</strong>.</p>
+        
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="{% url 'user_list' %}">Users</a></li>
+            <li><a href="{% url 'parking_place_list' %}">Parking Slots</a></li>
+            <li><a href="{% url 'payment_detail_list' %}">Payment Details</a></li>
+            <li><a href="{% url 'vehicle_type_list' %}">Vehicle Types</a></li>
+            <li><a href="{% url 'log_detail_list' %}">Log Details</a></li>
+        </ul>
+
+        <a href="{% url 'homepage' %}">Back to Homepage</a>
+    </div>
+
+</body>
+</html>
