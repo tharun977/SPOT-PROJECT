@@ -1,0 +1,28 @@
+<h1>Parking Slots</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Slot Number</th>
+            <th>Status</th>
+            <th>Vehicle Number</th>
+            <th>View</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for slot in object_list %}
+        <tr>
+            <td>{{ slot.slot_number }}</td>
+            <td>{{ "Occupied" if slot.is_occupied else "Available" }}</td>
+            <td>{{ slot.vehicle_number|default:"N/A" }}</td>
+            <td><a href="{% url 'parking_view' slot.id %}">View</a></td>
+            <td><a href="{% url 'parking_edit' slot.id %}">Edit</a></td>
+            <td><a href="{% url 'parking_delete' slot.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'parking_new' %}">Add New Slot</a>
