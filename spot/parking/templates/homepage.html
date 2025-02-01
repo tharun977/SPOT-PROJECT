@@ -4,63 +4,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPOT - Smart Parking Organization Tool</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>SPOT - Dashboard</title>
+
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
+            font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
         }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            border-radius: 10px;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
-        a {
-            text-decoration: none;
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #2c3e50;
+            padding-top: 20px;
             color: white;
-            background-color: #007bff;
-            padding: 10px 15px;
-            border-radius: 5px;
         }
-        a:hover {
-            background-color: #0056b3;
+
+        .sidebar h4 {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #34495e;
+        }
+
+        /* Content */
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-title {
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Welcome to SPOT!</h1>
-        <p>This is the homepage of the <strong>Smart Parking Organization Tool</strong>.</p>
-        
-        <h2>Menu</h2>
-        <ul>
-            <li><a href="{% url 'user_list' %}">Users</a></li>
-            <li><a href="{% url 'parking_place_list' %}">Parking Slots</a></li>
-            <li><a href="{% url 'payment_detail_list' %}">Payment Details</a></li>
-            <li><a href="{% url 'vehicle_type_list' %}">Vehicle Types</a></li>
-            <li><a href="{% url 'log_detail_list' %}">Log Details</a></li>
-        </ul>
-
-        <a href="{% url 'homepage' %}">Back to Homepage</a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4>SPOT Dashboard</h4>
+        <a href="{% url 'homepage' %}">Home</a>
+        <a href="{% url 'user_list' %}">Users</a>
+        <a href="{% url 'parking_place_list' %}">Parking Slots</a>
+        <a href="{% url 'payment_detail_list' %}">Payment Details</a>
+        <a href="{% url 'vehicle_type_list' %}">Vehicle Types</a>
+        <a href="{% url 'log_detail_list' %}">Log Details</a>
     </div>
 
+    <!-- Main Content -->
+    <div class="content">
+        
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+            <div class="container-fluid">
+                <span class="navbar-brand dashboard-title">Dashboard</span>
+            </div>
+        </nav>
+
+        <!-- Dashboard Cards -->
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h5>Total Users</h5>
+                        <p>View and manage all registered users.</p>
+                        <a href="{% url 'user_list' %}" class="btn btn-primary">Manage Users</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h5>Parking Slots</h5>
+                        <p>Monitor and allocate available parking spaces.</p>
+                        <a href="{% url 'parking_place_list' %}" class="btn btn-primary">View Slots</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h5>Payments</h5>
+                        <p>Manage customer payment transactions.</p>
+                        <a href="{% url 'payment_detail_list' %}" class="btn btn-primary">View Payments</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h5>Vehicle Types</h5>
+                        <p>Track and categorize different vehicle types.</p>
+                        <a href="{% url 'vehicle_type_list' %}" class="btn btn-primary">View Vehicles</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card p-3">
+                        <h5>Log Details</h5>
+                        <p>Access historical records and reports.</p>
+                        <a href="{% url 'log_detail_list' %}" class="btn btn-primary">View Logs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
