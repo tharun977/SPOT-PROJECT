@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import ModelForm
-from parking.models import ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail , User
-from .forms import UserForm 
+from parking.models import ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail, User
+from .forms import UserForm
+
+def homepage(request):
+    return render(request, 'base.html')  # Make sure 'homepage.html' exists in your templates
+
 
 # Form Classes
 class ParkingPlaceForm(ModelForm):
@@ -28,7 +32,6 @@ class LogDetailForm(ModelForm):
     class Meta:
         model = LogDetail
         fields = ['user_id', 'timestamp']
-
 
 # Parking Place Views
 def parking_place_list(request, template_name='parking/parking_place_list.html'):
@@ -62,7 +65,6 @@ def parking_place_delete(request, pk, template_name='parking/parking_place_confi
         return redirect('parking_place_list')
     return render(request, template_name, {'object': place})
 
-
 # Payment Detail Views
 def payment_detail_list(request, template_name='parking/payment_detail_list.html'):
     payments = PaymentDetail.objects.all()
@@ -94,7 +96,6 @@ def payment_detail_delete(request, pk, template_name='parking/payment_detail_con
         payment.delete()
         return redirect('payment_detail_list')
     return render(request, template_name, {'object': payment})
-
 
 # Vehicle Type Views
 def vehicle_type_list(request, template_name='parking/vehicle_type_list.html'):
@@ -128,7 +129,6 @@ def vehicle_type_delete(request, pk, template_name='parking/vehicle_type_confirm
         return redirect('vehicle_type_list')
     return render(request, template_name, {'object': vehicle_type})
 
-
 # Log Detail Views
 def log_detail_list(request, template_name='parking/log_detail_list.html'):
     logs = LogDetail.objects.all()
@@ -161,37 +161,40 @@ def log_detail_delete(request, pk, template_name='parking/log_detail_confirm_del
         return redirect('log_detail_list')
     return render(request, template_name, {'object': log})
 
+# User Views
+def user_list(request, template_name='parking/user_list.html'):
+    users = User.objects.all()
+    data = {'object_list': users}
+    return render(request, template_name, data)
 
+def user_view(request, pk, template_name='parking/user_detail.html'):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, template_name, {'user': user})
 
-def user_view(request, pk):
-    user = User.objects.get(pk=pk)
-    return render(request, 'user_detail.html', {'user': user})
-
-def user_create(request):
+def user_create(request, template_name='parking/user_form.html'):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('some-success-url')  # Redirect after successful creation
+            return redirect('user_list')  # Replace 'user_list' with your actual user list view name
     else:
         form = UserForm()
-    return render(request, 'parking/user_create.html', {'form': form})
+    return render(request, template_name, {'form': form})
 
-def user_update(request, pk):
+def user_update(request, pk, template_name='parking/user_form.html'):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('user_detail', pk=user.pk)  # Replace 'user_detail' with the appropriate URL name
+            return redirect('user_detail', pk=user.pk)  # Replace 'user_detail' with the correct URL name
     else:
         form = UserForm(instance=user)
-    return render(request, 'parking/user_form.html', {'form': form})
+    return render(request, template_name, {'form': form})
 
-
-def user_delete(request, pk):
-    user = User.objects.get(pk=pk)
+def user_delete(request, pk, template_name='parking/user_confirm_delete.html'):
+    user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
         user.delete()
-        return redirect('user_list')  # Replace with the actual name of the list view
-    return render(request, 'parking/user_confirm_delete.html', {'user': user})
+        return redirect('user_list')  # Replace with the actual name of the user list view
+    return render(request, template_name, {'user': user})

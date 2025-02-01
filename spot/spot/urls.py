@@ -19,7 +19,7 @@ from django.urls import path , include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('parking/', include('parking.urls')),  # Update 'books' to 'parking'
+    path('', include('parking.urls')),  # Update 'books' to 'parking'
 
 
 
