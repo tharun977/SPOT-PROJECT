@@ -1,0 +1,9 @@
+<h1>Delete Parking Slot</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete the parking slot #{{ object.slot_number }}?</p>
+    <input type="submit" value="Confirm Delete" />
+</form>
+
+<a href="{% url 'parking_list' %}">Cancel</a>
