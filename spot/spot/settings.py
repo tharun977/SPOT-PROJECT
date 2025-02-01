@@ -52,10 +52,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'spot.urls'
 
+# Static files configuration
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'parking/static',  # Update this to point to the 'parking' app's static folder
+]
+
+
+
+# Templates directory setup
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'parking/templates'],  # Update this to point to the 'parking' app's templates folder
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

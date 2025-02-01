@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SPOT - Smart Parking Organization Tool{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar or Header Section -->
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">SPOT</a></li>
+                <li><a href="{% url 'user_list' %}">Users</a></li>
+                <li><a href="{% url 'parking_slot_list' %}">Parking Slots</a></li>
+                <li><a href="{% url 'payment_detail_list' %}">Payments</a></li>
+                <li><a href="{% url 'log_detail_list' %}">Logs</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 SPOT - Smart Parking Organization Tool</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/script.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

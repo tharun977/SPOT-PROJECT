@@ -1,9 +1,15 @@
-<h1>Delete Parking Slot</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Edit{% else %}Create{% endif %} Parking Slot</h2>
 
 <form method="post">
     {% csrf_token %}
-    <p>Are you sure you want to delete the parking slot #{{ object.slot_number }}?</p>
-    <input type="submit" value="Confirm Delete" />
+    {{ form.as_p }}
+    <button type="submit">{% if form.instance.pk %}Save{% else %}Create{% endif %}</button>
 </form>
 
-<a href="{% url 'parking_list' %}">Cancel</a>
+{% if form.instance.pk %}
+<a href="{% url 'parking_slot_list' %}">Back to list</a>
+{% endif %}
+{% endblock %}
