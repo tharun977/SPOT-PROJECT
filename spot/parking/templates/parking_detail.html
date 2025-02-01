@@ -1,8 +1,0 @@
-<h1>Parking Slot Details</h1>
-<h2>Slot Number: {{ object.slot_number }}</h2>
-<p>Status: {{ "Occupied" if object.is_occupied else "Available" }}</p>
-<p>Vehicle Number: {{ object.vehicle_number|default:"N/A" }}</p>
-
-<a href="{% url 'parking_edit' object.id %}">Edit</a> |
-<a href="{% url 'parking_delete' object.id %}">Delete</a> |
-<a href="{% url 'parking_list' %}">Back to List</a>

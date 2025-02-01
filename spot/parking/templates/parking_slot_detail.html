@@ -1,0 +1,4 @@
+<h1>Parking Slot Details</h1>
+<p><strong>Slot Number:</strong> {{ object.slot_number }}</p>
+<p><strong>Status:</strong> {{ "Occupied" if object.is_occupied else "Available" }}</p>
+<p><strong>Vehicle Number:</strong> {{ object.vehicle_number|default:"N/A" }}</p>
