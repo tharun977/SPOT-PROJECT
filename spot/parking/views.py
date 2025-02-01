@@ -3,10 +3,19 @@ from django.forms import ModelForm
 from django.contrib import messages
 from parking.models import User ,ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail, User
 from .forms import UserForm
+from django.db.models import Sum
 
 def homepage(request):
-    return render(request, 'homepage.html')  # Make sure 'homepage.html' exists in your templates
-
+    total_users = User.objects.count()
+    total_payments = PaymentDetail.objects.aggregate(Sum('amount_paid'))['amount_paid__sum'] or 0
+    total_vehicles = VehicleType.objects.count()
+    
+    context = {
+        'total_users': total_users,
+        'total_payments': total_payments,
+        'total_vehicles': total_vehicles,
+    }
+    return render(request, 'homepage.html', context)
 
 # Form Classes
 class ParkingPlaceForm(ModelForm):
