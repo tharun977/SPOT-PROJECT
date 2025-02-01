@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import ModelForm
-from parking.models import ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail, User
+from django.contrib import messages
+from parking.models import User ,ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail, User
 from .forms import UserForm
 
 def homepage(request):
@@ -32,6 +33,62 @@ class LogDetailForm(ModelForm):
     class Meta:
         model = LogDetail
         fields = ['user_id', 'timestamp']
+
+# User Views
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'users/user_list.html', {'users': users})
+
+def user_view(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, 'users/user_view.html', {'user': user})
+
+# User Create View
+def user_create(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save()  # Save the user
+            user.groups.set(form.cleaned_data['roles'])  # Assign selected roles
+            user.save()
+            messages.success(request, "User created successfully!")
+            return redirect('user_list')  # Redirect to the user list page
+    else:
+        form = UserForm()
+
+    return render(request, 'user_create.html', {'form': form})
+
+
+# User Delete View
+def user_delete(request, pk, template_name='user_confirm_delete.html'):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, "User deleted successfully!")
+        return redirect('user_list')  # Ensure 'user_list' is the correct URL name
+    return render(request, template_name, {'user': user})
+
+# User List View
+def user_list(request, template_name='user_list.html'):
+    users = User.objects.all()
+    data = {'object_list': users}
+    return render(request, template_name, data)
+
+# User View (Detail View)
+def user_view(request, pk, template_name='user_detail.html'):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, template_name, {'user': user})
+
+
+# User Delete View
+def user_delete(request, pk, template_name='user_confirm_delete.html'):
+    user = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, "User deleted successfully!")
+        return redirect('user_list')  # Ensure 'user_list' is the correct URL name
+    return render(request, template_name, {'user': user})
+
 
 # Parking Place Views
 def parking_place_list(request, template_name='parking/parking_place_list.html'):

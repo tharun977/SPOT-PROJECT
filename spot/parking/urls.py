@@ -9,6 +9,8 @@ urlpatterns = [
     path('users/new/', views.user_create, name='user_new'),
     path('users/edit/<int:pk>/', views.user_update, name='user_edit'),
     path('users/delete/<int:pk>/', views.user_delete, name='user_delete'),
+    path('user/create/', views.user_create, name='user_create'),
+
     
     # ParkingPlace URLs
     path('parking-places/', views.parking_place_list, name='parking_place_list'),

@@ -1,47 +1,24 @@
-{% load static %}  <!-- Load static files at the top -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SPOT - Smart Parking Organization Tool{% endblock %}</title>
-    
-    <!-- Link to static CSS file -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
-    {% block extra_css %}{% endblock %}
+    <title>Parking App</title>
 </head>
 <body>
-    <!-- Navbar or Header Section -->
     <header>
+        <h1>Parking App</h1>
         <nav>
             <ul>
-                <!-- Corrected link to the homepage -->
-                <li><a href="{% url 'homepage' %}">SPOT</a></li>
-                
-                <!-- User management links -->
-                <li><a href="{% url 'user_list' %}">Users</a></li>
-                <li><a href="{% url 'user_new' %}">Create User</a></li>
-
-                <!-- Parking management links -->
-                <li><a href="{% url 'parking_place_list' %}">Parking Slots</a></li>
-                <li><a href="{% url 'parking_place_new' %}">Create Parking Slot</a></li>
-
-                <!-- Additional links for other models, if needed -->
-                <li><a href="{% url 'payment_detail_list' %}">Payment Details</a></li>
-                <li><a href="{% url 'vehicle_type_list' %}">Vehicle Types</a></li>
-                <li><a href="{% url 'log_detail_list' %}">Log Details</a></li>
+                <li><a href="{% url 'user_create' %}">Create User</a></li>
+                <li><a href="{% url 'user_list' %}">User List</a></li>
             </ul>
         </nav>
     </header>
-    
-    {% block content %}
-    <!-- Dynamic content will be injected here -->
-    {% endblock %}
 
-    <footer>
-        <!-- Common footer content -->
-    </footer>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
 </html>

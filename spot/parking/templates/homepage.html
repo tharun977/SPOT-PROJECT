@@ -9,6 +9,9 @@
     <!-- Bootstrap 5 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     
+    <!-- Font Awesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -22,15 +25,16 @@
             position: fixed;
             left: 0;
             top: 0;
-            background: #2c3e50;
-            padding-top: 20px;
+            background: #222e50;
             color: white;
+            padding-top: 20px;
+            transition: 0.3s;
         }
 
         .sidebar h4 {
             text-align: center;
             padding: 10px 0;
-            border-bottom: 1px solid #34495e;
+            border-bottom: 1px solid #2c3e50;
         }
 
         .sidebar a {
@@ -46,10 +50,41 @@
             background: #34495e;
         }
 
+        .sidebar .toggle-btn {
+            position: absolute;
+            right: -35px;
+            top: 20px;
+            background: #222e50;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            text-align: center;
+            line-height: 35px;
+            cursor: pointer;
+        }
+
+        /* Collapsed Sidebar */
+        .collapsed {
+            width: 80px;
+        }
+
+        .collapsed a span {
+            display: none;
+        }
+
+        .collapsed .toggle-btn i {
+            transform: rotate(180deg);
+        }
+
         /* Content */
         .content {
             margin-left: 250px;
             padding: 20px;
+            transition: 0.3s;
+        }
+
+        .collapsed + .content {
+            margin-left: 80px;
         }
 
         /* Navbar */
@@ -58,12 +93,17 @@
             box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
         }
 
-        .card {
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-
         .dashboard-title {
             font-weight: 600;
+        }
+
+        /* Animation */
+        .card {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -72,25 +112,22 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h4>SPOT Dashboard</h4>
-        <a href="{% url 'homepage' %}">Home</a>
-        <a href="{% url 'user_list' %}">Users</a>
-        <a href="{% url 'parking_place_list' %}">Parking Slots</a>
-        <a href="{% url 'payment_detail_list' %}">Payment Details</a>
-        <a href="{% url 'vehicle_type_list' %}">Vehicle Types</a>
-        <a href="{% url 'log_detail_list' %}">Log Details</a>
+        <div class="toggle-btn"><i class="fas fa-bars"></i></div>
+        <a href="{% url 'homepage' %}"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addUserModal"><i class="fas fa-user-plus"></i> <span>Add User</span></a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addParkingSlotModal"><i class="fas fa-parking"></i> <span>Add Parking Slot</span></a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addPaymentModal"><i class="fas fa-credit-card"></i> <span>Add Payment</span></a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#addVehicleModal"><i class="fas fa-car"></i> <span>Add Vehicle</span></a>
     </div>
 
     <!-- Main Content -->
     <div class="content">
-        
-        <!-- Top Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
             <div class="container-fluid">
                 <span class="navbar-brand dashboard-title">Dashboard</span>
             </div>
         </nav>
 
-        <!-- Dashboard Cards -->
         <div class="container mt-4">
             <div class="row">
                 <div class="col-md-4">
@@ -117,29 +154,48 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <div class="card p-3">
-                        <h5>Vehicle Types</h5>
-                        <p>Track and categorize different vehicle types.</p>
-                        <a href="{% url 'vehicle_type_list' %}" class="btn btn-primary">View Vehicles</a>
-                    </div>
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card p-3">
-                        <h5>Log Details</h5>
-                        <p>Access historical records and reports.</p>
-                        <a href="{% url 'log_detail_list' %}" class="btn btn-primary">View Logs</a>
-                    </div>
+                <div class="modal-body">
+                    <form action="{% url 'user_new' %}" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add User</button>
+                    </form>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Bootstrap Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery (for Sidebar Toggle) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $(".toggle-btn").click(function() {
+                $(".sidebar").toggleClass("collapsed");
+                $(".content").toggleClass("collapsed");
+            });
+        });
+    </script>
 </body>
 </html>
