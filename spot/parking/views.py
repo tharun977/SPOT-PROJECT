@@ -1,10 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.forms import ModelForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import JsonResponse
 from django.contrib import messages
-from parking.models import User ,ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail, User
-from .forms import UserForm
 from django.db.models import Sum
+from .models import User, ParkingPlace, ParkingLot, PaymentDetail, VehicleType, LogDetail
+from .forms import UserForm, ParkingPlaceForm, ParkingLot, PaymentDetailForm, VehicleTypeForm, LogDetailForm
+from django.forms import ModelForm
 
+
+def is_admin(user):
+    return user.is_authenticated and user.role == "Admin"
+
+# Homepage Dashboard View
+@login_required
 def homepage(request):
     total_users = User.objects.count()
     total_payments = PaymentDetail.objects.aggregate(Sum('amount_paid'))['amount_paid__sum'] or 0
@@ -15,7 +23,7 @@ def homepage(request):
         'total_payments': total_payments,
         'total_vehicles': total_vehicles,
     }
-    return render(request, 'homepage.html', context)
+    return render(request, 'homepage.html', context)  # Return context in response
 
 # Form Classes
 class ParkingPlaceForm(ModelForm):
@@ -44,223 +52,101 @@ class LogDetailForm(ModelForm):
         fields = ['user_id', 'timestamp']
 
 # User Views
+@login_required
 def user_list(request):
-    users = User.objects.all()
-    return render(request, 'users/user_list.html', {'users': users})
+    users = User.objects.all()  # Fetch all users
+    return render(request, 'users/user_list.html', {'object_list': users})
 
-def user_view(request, pk):
-    user = get_object_or_404(User, pk=pk)
-    return render(request, 'users/user_view.html', {'user': user})
-
-# User Create View
+@user_passes_test(is_admin)
 def user_create(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Save the user
-            user.groups.set(form.cleaned_data['roles'])  # Assign selected roles
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password"])  # Secure password
             user.save()
+            user.groups.set(form.cleaned_data['roles'])  # Assign roles
             messages.success(request, "User created successfully!")
-            return redirect('user_list')  # Redirect to the user list page
+            return redirect('user_list')
     else:
         form = UserForm()
+    return render(request, 'users/user_form.html', {'form': form})
 
-    return render(request, 'user_create.html', {'form': form})
-
-
-# User Delete View
-def user_delete(request, pk, template_name='user_confirm_delete.html'):
+@user_passes_test(is_admin)
+def user_delete(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
         user.delete()
         messages.success(request, "User deleted successfully!")
-        return redirect('user_list')  # Ensure 'user_list' is the correct URL name
-    return render(request, template_name, {'user': user})
+        return redirect('user_list')
+    return render(request, 'users/user_confirm_delete.html', {'user': user})
 
-# User List View
-def user_list(request, template_name='user_list.html'):
-    users = User.objects.all()
-    data = {'object_list': users}
-    return render(request, template_name, data)
-
-# User View (Detail View)
-def user_view(request, pk, template_name='user_detail.html'):
-    user = get_object_or_404(User, pk=pk)
-    return render(request, template_name, {'user': user})
-
-
-# User Delete View
-def user_delete(request, pk, template_name='user_confirm_delete.html'):
-    user = get_object_or_404(User, pk=pk)
-    if request.method == 'POST':
-        user.delete()
-        messages.success(request, "User deleted successfully!")
-        return redirect('user_list')  # Ensure 'user_list' is the correct URL name
-    return render(request, template_name, {'user': user})
-
-
-# Parking Place Views
-def parking_place_list(request, template_name='parking/parking_place_list.html'):
-    places = ParkingPlace.objects.all()
-    data = {'object_list': places}
-    return render(request, template_name, data)
-
-def parking_place_view(request, pk, template_name='parking/parking_place_detail.html'):
-    place = get_object_or_404(ParkingPlace, pk=pk)
-    return render(request, template_name, {'object': place})
-
-def parking_place_create(request, template_name='parking/parking_place_form.html'):
-    form = ParkingPlaceForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('parking_place_list')
-    return render(request, template_name, {'form': form})
-
-def parking_place_update(request, pk, template_name='parking/parking_place_form.html'):
-    place = get_object_or_404(ParkingPlace, pk=pk)
-    form = ParkingPlaceForm(request.POST or None, instance=place)
-    if form.is_valid():
-        form.save()
-        return redirect('parking_place_list')
-    return render(request, template_name, {'form': form})
-
-def parking_place_delete(request, pk, template_name='parking/parking_place_confirm_delete.html'):
-    place = get_object_or_404(ParkingPlace, pk=pk)
-    if request.method == 'POST':
-        place.delete()
-        return redirect('parking_place_list')
-    return render(request, template_name, {'object': place})
-
-# Payment Detail Views
-def payment_detail_list(request, template_name='parking/payment_detail_list.html'):
-    payments = PaymentDetail.objects.all()
-    data = {'object_list': payments}
-    return render(request, template_name, data)
-
-def payment_detail_view(request, pk, template_name='parking/payment_detail_view.html'):
-    payment = get_object_or_404(PaymentDetail, pk=pk)
-    return render(request, template_name, {'object': payment})
-
-def payment_detail_create(request, template_name='parking/payment_detail_form.html'):
-    form = PaymentDetailForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('payment_detail_list')
-    return render(request, template_name, {'form': form})
-
-def payment_detail_update(request, pk, template_name='parking/payment_detail_form.html'):
-    payment = get_object_or_404(PaymentDetail, pk=pk)
-    form = PaymentDetailForm(request.POST or None, instance=payment)
-    if form.is_valid():
-        form.save()
-        return redirect('payment_detail_list')
-    return render(request, template_name, {'form': form})
-
-def payment_detail_delete(request, pk, template_name='parking/payment_detail_confirm_delete.html'):
-    payment = get_object_or_404(PaymentDetail, pk=pk)
-    if request.method == 'POST':
-        payment.delete()
-        return redirect('payment_detail_list')
-    return render(request, template_name, {'object': payment})
-
-# Vehicle Type Views
-def vehicle_type_list(request, template_name='parking/vehicle_type_list.html'):
-    vehicle_types = VehicleType.objects.all()
-    data = {'object_list': vehicle_types}
-    return render(request, template_name, data)
-
-def vehicle_type_view(request, pk, template_name='parking/vehicle_type_view.html'):
-    vehicle_type = get_object_or_404(VehicleType, pk=pk)
-    return render(request, template_name, {'object': vehicle_type})
-
-def vehicle_type_create(request, template_name='parking/vehicle_type_form.html'):
-    form = VehicleTypeForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('vehicle_type_list')
-    return render(request, template_name, {'form': form})
-
-def vehicle_type_update(request, pk, template_name='parking/vehicle_type_form.html'):
-    vehicle_type = get_object_or_404(VehicleType, pk=pk)
-    form = VehicleTypeForm(request.POST or None, instance=vehicle_type)
-    if form.is_valid():
-        form.save()
-        return redirect('vehicle_type_list')
-    return render(request, template_name, {'form': form})
-
-def vehicle_type_delete(request, pk, template_name='parking/vehicle_type_confirm_delete.html'):
-    vehicle_type = get_object_or_404(VehicleType, pk=pk)
-    if request.method == 'POST':
-        vehicle_type.delete()
-        return redirect('vehicle_type_list')
-    return render(request, template_name, {'object': vehicle_type})
-
-# Log Detail Views
-def log_detail_list(request, template_name='parking/log_detail_list.html'):
-    logs = LogDetail.objects.all()
-    data = {'object_list': logs}
-    return render(request, template_name, data)
-
-def log_detail_view(request, pk, template_name='parking/log_detail_view.html'):
-    log = get_object_or_404(LogDetail, pk=pk)
-    return render(request, template_name, {'object': log})
-
-def log_detail_create(request, template_name='parking/log_detail_form.html'):
-    form = LogDetailForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('log_detail_list')
-    return render(request, template_name, {'form': form})
-
-def log_detail_update(request, pk, template_name='parking/log_detail_form.html'):
-    log = get_object_or_404(LogDetail, pk=pk)
-    form = LogDetailForm(request.POST or None, instance=log)
-    if form.is_valid():
-        form.save()
-        return redirect('log_detail_list')
-    return render(request, template_name, {'form': form})
-
-def log_detail_delete(request, pk, template_name='parking/log_detail_confirm_delete.html'):
-    log = get_object_or_404(LogDetail, pk=pk)
-    if request.method == 'POST':
-        log.delete()
-        return redirect('log_detail_list')
-    return render(request, template_name, {'object': log})
-
-# User Views
-def user_list(request, template_name='parking/user_list.html'):
-    users = User.objects.all()
-    data = {'object_list': users}
-    return render(request, template_name, data)
-
-def user_view(request, pk, template_name='parking/user_detail.html'):
-    user = get_object_or_404(User, pk=pk)
-    return render(request, template_name, {'user': user})
-
-def user_create(request, template_name='parking/user_form.html'):
-    if request.method == 'POST':
-        form = UserForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('user_list')  # Replace 'user_list' with your actual user list view name
-    else:
-        form = UserForm()
-    return render(request, template_name, {'form': form})
-
-def user_update(request, pk, template_name='parking/user_form.html'):
+@user_passes_test(is_admin)
+def user_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('user_detail', pk=user.pk)  # Replace 'user_detail' with the correct URL name
+            return redirect('user_view', pk=user.pk)
     else:
         form = UserForm(instance=user)
-    return render(request, template_name, {'form': form})
+    return render(request, 'users/user_form.html', {'form': form})
 
-def user_delete(request, pk, template_name='parking/user_confirm_delete.html'):
-    user = get_object_or_404(User, pk=pk)
+
+# Parking Place Views
+@login_required
+def parking_place_list(request):
+    places = ParkingPlace.objects.all()
+    return render(request, 'parking/parking_place_list.html', {'object_list': places})
+
+@login_required
+def parking_place_view(request, pk):
+    place = get_object_or_404(ParkingPlace, pk=pk)
+    return render(request, 'parking/parking_place_detail.html', {'object': place})
+
+@user_passes_test(is_admin)
+def parking_place_create(request):
+    form = ParkingPlaceForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Parking Place added successfully!")
+        return redirect('parking_place_list')
+    return render(request, 'parking/parking_place_form.html', {'form': form})
+
+@user_passes_test(is_admin)
+def parking_place_delete(request, pk):
+    place = get_object_or_404(ParkingPlace, pk=pk)
     if request.method == 'POST':
-        user.delete()
-        return redirect('user_list')  # Replace with the actual name of the user list view
-    return render(request, template_name, {'user': user})
+        place.delete()
+        return redirect('parking_place_list')
+    return render(request, 'parking/parking_place_confirm_delete.html', {'object': place})
+
+# Parking Lot Views (Admin Only)
+@user_passes_test(is_admin)
+def parking_lot_create(request):
+    form = ParkingLotForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Parking Lot added successfully!")
+        return redirect('parking_place_list')
+    return render(request, 'parking/parking_lot_form.html', {'form': form})
+
+
+# Payment Detail Views
+@login_required
+def payment_detail_list(request):
+    payments = PaymentDetail.objects.all()
+    return render(request, 'parking/payment_detail_list.html', {'object_list': payments})
+
+# Vehicle Type Views
+@login_required
+def vehicle_type_list(request):
+    vehicle_types = VehicleType.objects.all()
+    return render(request, 'parking/vehicle_type_list.html', {'object_list': vehicle_types})
+
+# Log Detail Views
+@login_required
+def log_detail_list(request):
+    logs = LogDetail.objects.all()
+    return render(request, 'parking/log_detail_list.html', {'object_list': logs})

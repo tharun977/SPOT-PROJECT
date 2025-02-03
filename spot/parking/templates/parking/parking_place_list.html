@@ -1,22 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parking Slots</title>
-</head>
-<body>
-    <h1>Parking Slots</h1>
-    <a href="{% url 'parking_place_new' %}">Create New Parking Slot</a>
-    <ul>
-        {% for parking_place in parking_places %}
-            <li>
-                <a href="{% url 'parking_place_view' parking_place.pk %}">{{ parking_place.name }}</a>
-                - <a href="{% url 'parking_place_edit' parking_place.pk %}">Edit</a>
-                - <a href="{% url 'parking_place_delete' parking_place.pk %}">Delete</a>
-            </li>
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-2xl font-semibold mb-4">Parking Places</h1>
+<table class="w-full bg-white shadow-md rounded-lg">
+    <thead>
+        <tr class="bg-gray-200">
+            <th class="py-2 px-4">Place Name</th>
+            <th class="py-2 px-4">Location</th>
+            <th class="py-2 px-4">Capacity</th>
+            <th class="py-2 px-4">Status</th>
+            <th class="py-2 px-4">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for place in object_list %}
+        <tr class="border-t">
+            <td class="py-2 px-4">{{ place.place_name }}</td>
+            <td class="py-2 px-4">{{ place.location }}</td>
+            <td class="py-2 px-4">{{ place.capacity }}</td>
+            <td class="py-2 px-4">
+                {% if place.status %}
+                    <span class="text-green-500">Available</span>
+                {% else %}
+                    <span class="text-red-500">Full</span>
+                {% endif %}
+            </td>
+            <td class="py-2 px-4">
+                <a href="{% url 'parking_place_view' place.pk %}" class="text-blue-500">View</a> |
+                <a href="{% url 'parking_place_delete' place.pk %}" class="text-red-500">Delete</a>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
-    <a href="{% url 'homepage' %}">Back to Homepage</a>
-</body>
-</html>
+    </tbody>
+</table>
+{% endblock %}
