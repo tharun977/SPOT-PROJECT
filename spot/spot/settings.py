@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/admin-dashboard/'  # This will redirect admins to the admin dashboard after login
 
 # Application definition
 

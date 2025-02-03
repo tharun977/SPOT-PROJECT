@@ -1,6 +1,21 @@
 from django import forms 
 from django.contrib.auth.models import User, Group
 from .models import User, VehicleType, ParkingLot, ParkingPlace, ParkingDetail, PaymentDetail, LogDetail
+from django.contrib.auth.forms import UserCreationForm , AuthenticationForm
+
+class UserRegistrationForm(UserCreationForm):
+    full_name = forms.CharField(max_length=255)
+    mobile_number = forms.CharField(max_length=15)
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'full_name', 'mobile_number', 'email', 'password1', 'password2']
+
+
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(max_length=255)
+    password = forms.CharField(widget=forms.PasswordInput)
 
 
 class UserForm(forms.ModelForm):
@@ -12,16 +27,17 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'full_name', 'mobile_number', 'email', 'role']
+        fields = ['username', 'password', 'full_name', 'mobile_number', 'email', 'roles']
 
     def save(self, commit=True):
         user = super().save(commit=False)
         if commit:
             user.set_password(self.cleaned_data["password"])  # Hash password
             user.save()
-            self.save_m2m()
+            self.save_m2m()  # Save the many-to-many relationship (roles)
+            user.groups.set(self.cleaned_data['roles'])  # Assign the roles
         return user
-
+    
     
 
 class VehicleTypeForm(forms.ModelForm):

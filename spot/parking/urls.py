@@ -2,10 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.homepage, name='homepage'),  # The root URL for homepage
+    path('register/', views.register, name='register'),
+    path('', views.user_login, name='login'),
+    path('homepage', views.homepage, name='homepage'),  # The root URL for homepage
     # User URLs
+    path('users/create/', views.user_create, name='user_create'),
     path('users/', views.user_list, name='user_list'),
-    path('users/new/', views.user_create, name='user_new'),
     path('users/edit/<int:pk>/', views.user_update, name='user_edit'),
     path('users/delete/<int:pk>/', views.user_delete, name='user_delete'),
     path('user/create/', views.user_create, name='user_create'),
