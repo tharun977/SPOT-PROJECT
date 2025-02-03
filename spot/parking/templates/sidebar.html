@@ -1,0 +1,19 @@
+<div id="sidebar" class="w-64 h-screen bg-gray-900 text-white flex flex-col fixed">
+    <h2 class="text-xl font-semibold text-center py-4">SPOT Admin Panel</h2>
+    
+    <nav class="mt-4">
+        <a href="{% url 'homepage' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Dashboard</a>
+        <a href="{% url 'user_list' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Users</a>
+        <a href="{% url 'parking_place_list' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Parking Places</a>
+        <a href="{% url 'payment_detail_list' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Payments</a>
+        <a href="{% url 'vehicle_type_list' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Vehicles</a>
+        <a href="{% url 'log_detail_list' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Logs</a>
+
+        {% if request.user.is_authenticated and request.user.role == "Admin" %}
+        <h3 class="text-sm text-gray-400 px-5 mt-4">Admin Controls</h3>
+        <a href="{% url 'user_create' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Create User</a>
+        <a href="{% url 'parking_place_create' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Add Parking Place</a>
+        <a href="{% url 'parking_lot_create' %}" class="block py-3 px-5 rounded hover:bg-gray-700">Add Parking Lot</a>
+        {% endif %}
+    </nav>
+</div>
